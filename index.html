@@ -1,91 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Hello, world!</title>
+  <title>Have a medal!</title>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="description" content="" />
   <style>
-    body {
-    }
     @font-face {
-        font-family: twemoji;
-        src: url('TwemojiMozilla-colr.woff2');
+      font-family: twemoji;
+      src: url('TwemojiMozilla-colr.woff2');
     }
+    html {
+      height: 90%;
+      padding: 20px;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+      max-width: 600px;
+      margin: auto;
+      height: 100%;
+    }
+    div {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 25%;
 
-    body div {
       text-align: center;
-    }
-    div#header {
-      font-family: Arial;
+      text-transform: uppercase;
+      font-family: Sans-serif;
       font-weight: bold;
     }
     div#emojus {
-      font-family: twemoji;
-      font-size: 200px;
-      white-space: nowrap;
-      max-width: 600px;
-      margin-left: auto;
-      margin-right: auto;
-      overflow: hidden;
-    }
-    div#footer {
-      font-family: Arial;
-      font-weight: bold;
+      font-family: twemoji, Sans-serif;
+      height: 48%;
+      font-size: 360px;
     }
   </style>
   <script language="javascript" src="lz-string.js"></script>
-  <script type="text/javascript">
-    const HaveAMedal = {
-      autoSize: (element, config) => {
-
-        const getTextWidth = (text, fontFace, fontSize) => {
-          var canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));
-          var context = canvas.getContext("2d");
-          context.font = `${fontSize}px ${fontFace}`;
-          var metrics = context.measureText(text);
-          return metrics.width;
-        };
-
-        const getParagraphWidth = (text, fontFace, fontSize) => {
-          return Math.max(...text.split("\n").map(sentence => getTextWidth(sentence, fontFace, fontSize)));
-        };
-
-        const sizeToWidth = (text, fontFace, width) => {
-          let size = config.maxFontSize;
-          while (getParagraphWidth(text, fontFace, size) > width) {
-            size -= config.fontStep || 1;
-            if (size <= config.minFontSize) {
-              break;
-            }
-          }
-          return size;
-        };
-
-        const resize = (component) => {
-          const size = sizeToWidth(component.innerText, config.fontFace, config.maxWidth);
-          component.style.fontSize = `${size}px`;
-        };
-
-        element.addEventListener("input", event => resize(element));
-        resize(element);
-      },
-
-    };
+  <script language="javascript" src="textfit.js"></script>
+  <script language="javascript">
     document.addEventListener("DOMContentLoaded", event => {
       const HEADER = document.getElementById("header");
       const EMOJUS = document.getElementById("emojus");
       const FOOTER = document.getElementById("footer");
-
-      const update = () => {
-        const state = {
-          "h": HEADER.innerText,
-          "e": EMOJUS.innerText,
-          "f": FOOTER.innerText
-        };
-        const compressed = LZString.compressToEncodedURIComponent(JSON.stringify(state));
-        window.location.hash = `#${compressed}`;
-      };
 
       const stateString = LZString.decompressFromEncodedURIComponent(window.location.hash.substr(1));
       if (stateString) {
@@ -93,44 +52,67 @@
         HEADER.innerText = state["h"];
         EMOJUS.innerText = state["e"];
         FOOTER.innerText = state["f"];
+        document.title = `${state["h"]} ${state["f"]}`;
       }
 
-      HaveAMedal.autoSize(HEADER, {
-        fontFace: "Arial",
-        minFontSize: 20,
-        maxFontSize: 90,
-        maxWidth: 600
-      });
-      HaveAMedal.autoSize(EMOJUS, {
-        fontFace: "twemoji",
-        minFontSize: 200,
-        maxFontSize: 460,
-        fontStep: 200,
-        maxWidth: 600
-      });
-      HaveAMedal.autoSize(FOOTER, {
-        fontFace: "Arial",
-        minFontSize: 20,
-        maxFontSize: 90,
-        maxWidth: 600
-      });
+      const SETTINGS = {
+        alignVert: true,
+        alignHoriz: true,
+        multiLine: false,
+        detectMultiLine: false,
+        minFontSize: 6,
+        maxFontSize: 600,
+        reProcess: true,
+        widthOnly: false,
+        alignVertWithFlexbox: true,
+      };
 
-      HEADER.addEventListener("input", event => {update();});
-      EMOJUS.addEventListener("input", event => {update();});
-      FOOTER.addEventListener("input", event => {update();});
+      const rejig = () => {
+
+        console.log("re-jigging");
+
+        for (const element of [HEADER, EMOJUS, FOOTER]) {
+          textFit(element, SETTINGS);
+        }
+
+
+        const state = {
+          "h": HEADER.innerText,
+          "e": EMOJUS.innerText,
+          "f": FOOTER.innerText
+        };
+        document.title = `${state["h"]} ${state["f"]}`;
+        const compressed = LZString.compressToEncodedURIComponent(JSON.stringify(state));
+        if (compressed != "N4IgFiBcIBIIIDUCiAdAdnABAWSQETgBkQAaEAUyhED4NwcV3SQAzKgTQHkBVdPJAZSQBKyTAEkAKiAC+QA") {
+            // Only reveal the hash if the default content is changed.
+            window.location.hash = `#${compressed}`;
+        }
+
+      };
+
+      window.addEventListener('resize', function(event) {
+        rejig();
+      }, true);
 
       document.body.addEventListener("dblclick", event => {
-          HEADER.contentEditable = true;
-          EMOJUS.contentEditable = true;
-          FOOTER.contentEditable = true;
+        for (const element of [HEADER, EMOJUS, FOOTER]) {
+          element.firstChild.contentEditable = true;
+          element.addEventListener("input", event => {rejig();});
+        }
       });
 
+      rejig();
     });
   </script>
 </head>
 <body>
-  <div id="header">HAVE A MEDAL</div>
-  <div id="emojus">🥇</div>
-  <div id="footer">YOU DESERVE IT</div>
+  <div id="header">
+    Have <br> a medal
+  </div>
+  <div id="emojus">
+    🥇
+  </div>
+  <div id="footer">
+    You <br> deserve it
+  </div>
 </body>
-</html>
