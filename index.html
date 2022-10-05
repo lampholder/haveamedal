@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Have a medal!</title>
+  <title>Have a Medal</title>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="description" content="" />
@@ -86,6 +86,9 @@
         if (compressed != "N4IgFiBcIBIIIDUCiAdAdnABAWSQETgBkQAaEAUyhED4NwcV3SQAzKgTQHkBVdPJAZSQBKyTAEkAKiAC+QA") {
             // Only reveal the hash if the default content is changed.
             window.location.hash = `#${compressed}`;
+        }
+        else {
+            window.location.hash = '';
         }
 
       };
