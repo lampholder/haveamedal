@@ -37,6 +37,10 @@
       height: 48%;
       font-size: 360px;
     }
+    div#footer {
+      /* Provides whitespace balance to the bottom-heavy twemojis */
+      padding-top: 6%;
+    }
   </style>
   <script language="javascript" src="lz-string.js"></script>
   <script language="javascript" src="textfit.js"></script>
@@ -69,12 +73,9 @@
 
       const rejig = () => {
 
-        console.log("re-jigging");
-
         for (const element of [HEADER, EMOJUS, FOOTER]) {
           textFit(element, SETTINGS);
         }
-
 
         const state = {
           "h": HEADER.innerText,
