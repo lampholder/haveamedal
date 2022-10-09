@@ -13,6 +13,7 @@
     html {
       height: 90%;
       padding: 20px;
+      font-family: twemoji, Sans-serif;
     }
     body {
       display: flex;
@@ -29,11 +30,9 @@
 
       text-align: center;
       text-transform: uppercase;
-      font-family: Sans-serif;
       font-weight: bold;
     }
     div#emojus {
-      font-family: twemoji, Sans-serif;
       height: 48%;
     }
     div#footer {
@@ -96,6 +95,14 @@
       window.addEventListener('resize', function(event) {
         rejig();
       }, true);
+
+      for (const element of [HEADER, EMOJUS, FOOTER]) {
+        element.addEventListener('paste', function (e) {
+          e.preventDefault()
+          var text = e.clipboardData.getData('text/plain')
+          document.execCommand('insertText', false, text)
+        });
+      }
 
       document.body.addEventListener("dblclick", event => {
         for (const element of [HEADER, EMOJUS, FOOTER]) {
