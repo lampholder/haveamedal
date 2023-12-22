@@ -55,8 +55,8 @@
 
       function manifest(name, emojus) {
         var manifestJSON = {
-          "name": name,
-          "short_name": name,
+          "name": emojus + " " + name,
+          "short_name": emojus + " " + name,
           "scope": location.protocol + "//" + location.host,
           "start_url": window.location.href,
           "display": "standalone",
