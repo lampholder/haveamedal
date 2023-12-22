@@ -51,7 +51,7 @@
               ${icon}
             </text>
           </svg>
-        `.trim();
+        `.replace(/\s\s+/g, ' ').trim();
       }
 
       function manifest(name, emojus) {
@@ -86,7 +86,7 @@
         HEADER.innerText = state["h"];
         EMOJUS.innerText = state["e"];
         FOOTER.innerText = state["f"];
-        document.title = `${state["h"]} ${state["f"]}`;
+        document.title = `${state["h"]} ${state["f"]}`.replace(/\s\s+/g, ' ').trim();
         MANIFEST.setAttribute("href", manifest(
           document.title,
           faviconEmojus
