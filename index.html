@@ -3,6 +3,7 @@
 <head>
   <title>Have a Medal</title>
   <meta charset="UTF-8" />
+  <link rel="manifest" id="manifest-placeholder">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🥇</text></svg>">
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="description" content="" />
@@ -38,6 +39,7 @@
   <script language="javascript">
     document.addEventListener("DOMContentLoaded", event => {
       const FAVICON = document.querySelector("head > link[rel='icon']");
+      const MANIFEST = document.getElementById("manifest-placeholder");
       const HEADER = document.getElementById("header");
       const EMOJUS = document.getElementById("emojus");
       const FOOTER = document.getElementById("footer");
@@ -52,14 +54,43 @@
         `.trim();
       }
 
+      function manifest(name, emojus) {
+        var manifestJSON = {
+          "name": name,
+          "short_name": name,
+          "scope": location.protocol + "//" + location.host,
+          "start_url": location.protocol + "//" + location.host + location.pathname,
+          "display": "standalone",
+          "icons": [
+            {
+              "src": faviconTemplate(emojus),
+              "sizes": "48x48 72x72 96x96 128x128 256x256 512x512",
+              "type": "image/svg+xml",
+              "purpose": "any"
+            }
+          ],
+          "background_color": "black",
+          "theme_color": "#027be3"
+        };
+
+        const stringManifest = JSON.stringify(manifestJSON);
+        const blob = new Blob([stringManifest], {type: 'application/json'});
+        return URL.createObjectURL(blob);
+      }
+
       const stateString = LZString.decompressFromEncodedURIComponent(window.location.hash.substr(1));
       if (stateString) {
         state = JSON.parse(stateString);
-        FAVICON.setAttribute("href", faviconTemplate(Array.from(state["e"])[0]));
+        var faviconEmojus = Array.from(state["e"])[0];
+        FAVICON.setAttribute("href", faviconTemplate(faviconEmojus));
         HEADER.innerText = state["h"];
         EMOJUS.innerText = state["e"];
         FOOTER.innerText = state["f"];
         document.title = `${state["h"]} ${state["f"]}`;
+        MANIFEST.setAttribute("href", manifest(
+          document.title,
+          faviconEmojus
+        ));
       }
 
       const SETTINGS = {
