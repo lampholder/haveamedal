@@ -59,7 +59,7 @@
           "name": name,
           "short_name": name,
           "scope": location.protocol + "//" + location.host,
-          "start_url": location.protocol + "//" + location.host + location.pathname,
+          "start_url": window.location.href,
           "display": "standalone",
           "icons": [
             {
@@ -69,8 +69,8 @@
               "purpose": "any"
             }
           ],
-          "background_color": "black",
-          "theme_color": "#027be3"
+          "background_color": "white",
+          "theme_color": "#FFFFFF"
         };
 
         const stringManifest = JSON.stringify(manifestJSON);
