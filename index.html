@@ -4,7 +4,7 @@
   <title>Have a Medal</title>
   <meta charset="UTF-8" />
   <link rel="manifest" id="manifest-placeholder">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🥇</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 16 16'><text x='0' y='14'>🥇</text></svg>">
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="description" content="" />
   <style>
@@ -14,24 +14,22 @@
       font-family: Sans-serif;
     }
     body {
-      display: flex;
-      flex-direction: column;
       max-width: 700px;
       margin: auto;
       height: 100%;
     }
     div {
-      display: flex;
       align-items: center;
       justify-content: center;
-      height: 25%;
-
+      height: 33%;
       text-align: center;
       text-transform: uppercase;
       font-weight: bold;
     }
     div#emojus {
-      height: 48%;
+      line-height: 33vh;
+      font-size: 33vh;
+      white-space: nowrap;
     }
   </style>
   <script language="javascript" src="lz-string.js"></script>
@@ -45,12 +43,7 @@
       const FOOTER = document.getElementById("footer");
 
       function faviconTemplate(icon) {
-        return `data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22>
-            <text y=%22.9em%22 font-size=%2290%22>
-              ${icon}
-            </text>
-          </svg>
-        `.replace(/\s\s+/g, ' ').trim();
+        return `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 16 16'><text x='0' y='14'>${icon}</text></svg>`; 
       }
 
       function manifest(name, emojus) {
@@ -105,7 +98,8 @@
       };
 
       const rejig = () => {
-        for (const element of [HEADER, EMOJUS, FOOTER]) {
+        for (const element of [HEADER, FOOTER]) {
+          // window.fitText(element);
           textFit(element, SETTINGS);
         }
 
@@ -139,7 +133,9 @@
       }
 
       document.body.addEventListener("dblclick", event => {
-        for (const element of [HEADER, EMOJUS, FOOTER]) {
+        EMOJUS.contentEditable = true;
+        EMOJUS.addEventListener("input", event => {rejig();});
+        for (const element of [HEADER, FOOTER]) {
           element.firstChild.contentEditable = true;
           element.addEventListener("input", event => {rejig();});
         }
